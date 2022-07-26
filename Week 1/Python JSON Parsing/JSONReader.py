@@ -1,31 +1,33 @@
 #function that does initial handling on raw line string
 def parseLine(file, line, titles, depth):
     line = line.strip()
-    #if line is empty, skip
+    skip = False
+    #if line is empty, skip handling
     if line == "":
-        parseLine(file, file.readline(), titles, depth)
-        return
-    #get first character of line to find handling method
-    firstChar = line[0]
-    match firstChar:
-        #if it's an object open, increase depth continue on
-        case "{":
-            depth = depth + 1
-        #if it's an object closer, decrease depth continue on
-        case "}":
-            #if this is the final depth, end of file reached, end recursion
-            if depth == 1:
-                return
-            #print line to seperate objects
-            print("-"*45)
-            depth = depth - 1
-        #if line represents end of list, remove last list titles
-        case "]":
-            titles.pop()
-        #if line begins with a string, it's a key/value pair, continue on processing
-        case "\"":
-            processLine(file, line, titles, depth)
-            return
+        skip = True
+        
+    if skip == False:
+        #get first character of line to find handling method
+        firstChar = line[0]
+        match firstChar:
+            #if it's an object open, increase depth continue on
+            case "{":
+                depth = depth + 1
+            #if it's an object closer, decrease depth continue on
+            case "}":
+                #if this is the final depth, end of file reached, end recursion
+                if depth == 1:
+                    return
+                #print line to seperate objects
+                print("-"*45)
+                depth = depth - 1
+            #if line represents end of list, remove last list titles
+            case "]":
+                titles.pop()
+            #if line begins with a string, it's a key/value pair, continue on processing
+            case "\"":
+                processLine(file, line, titles, depth)
+                #return
     #go next line
     parseLine(file, file.readline(), titles, depth)
 
@@ -50,8 +52,6 @@ def processLine(file, line, titles, depth):
             #otherwise print the key/value pair as a string
             else:
                 print(" - ".join(titles) + " - " + value[0] + ": " + value[1])
-    #return and continue to next  
-    parseLine(file, file.readline(), titles, depth)
 
 #def processLine(file, line, titles, depth):
 #    if line[-1] == ",":
