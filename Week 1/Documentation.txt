@@ -1,0 +1,26 @@
+Javascript API Reader
+
+https://agify.io/
+Api takes a request containing a name, and returns a guess at it's age.
+
+Canabalised basic HTML and Javascript from this site for boilerplate and introduction
+https://javascript.info/hello-world
+
+Utilised similiar API request examples to handle the Agify.io request and handling
+https://www.taniarascia.com/how-to-connect-to-an-api-with-javascript/
+
+Used HTML from below link for text Input
+https://www.w3schools.com/tags/att_input_type_text.asp
+
+
+Python JSON Parser
+
+Basic premise is that I created a function that can analyse and handle any line in a JSON file,
+then I call it recursively on each subsequent line. 
+Could very certainly be changed to a sequential function but not alot of merit to do so.
+
+Needed to brush up on basic Python Syntax,
+also needed to install Python 3.10 as I wanted to utilise the Match/Case statement
+
+All the code was written by myself though, so no links are needed.
+
