@@ -51,18 +51,6 @@ def processLine(file, line, titles, depth):
         else:
             print(" - ".join(titles) + " - " + value[0] + ": " + value[1])
 
-#def processLine(file, line, titles, depth):
-#    if line[-1] == ",":
-#        line = line[0:-1]
-#    value = line[-1]
-#    match value:
-#        case "[":
-#            titles.append(line.split("\"")[1])
-#        case "\"":
-#            print(" - ".join(titles) + " - " + line.split("\"")[1] + ": " + line.split("\"")[3])
-#
-#    parseLine(file, file.readline(), titles, depth)
-
 file = open("sample file.json", "r")
 firstLine = file.readline() 
 parseLine(file, firstLine, [], 0)
