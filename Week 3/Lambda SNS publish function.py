@@ -6,7 +6,7 @@ import boto3
 def lambda_handler(event, context):
     
     client = boto3.client("sns")
-    response = client.publish(TopicArn = "arn:aws:sns:ap-southeast-2:931299814805:Jordan-test-topic", Message="Can't believe this worked")
+    response = client.publish(TopicArn = "arn:aws:sns:ap-southeast-2:931299814805:Jordan-test-topic", Message=event['key1'])
             
     return {
         'statusCode': 200,
