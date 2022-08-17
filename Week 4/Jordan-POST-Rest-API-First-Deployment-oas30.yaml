@@ -1,0 +1,87 @@
+openapi: "3.0.1"
+info:
+  title: "Jordan-POST-Rest-API"
+  description: "testing REST api instead of HTTP"
+  version: "2022-08-17T01:22:02Z"
+servers:
+- url: "https://lv1vhxh4g9.execute-api.ap-southeast-2.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "/First-Deployment"
+paths:
+  /:
+    post:
+      parameters:
+      - name: "region_id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "manager_id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "first_name"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "last_name"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "job_id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "hire_date"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "email"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "employee_id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "table_name"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+      - name: "salary"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "phone_number"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "region_name"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "department_id"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    x-amazon-apigateway-any-method:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+components:
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"
