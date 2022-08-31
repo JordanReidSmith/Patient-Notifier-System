@@ -17,7 +17,7 @@ class PNSTitle extends React.Component {
 class AddNotification extends React.Component {
   render() {
     return (
-      <center>
+      <div>
         <div>
           <h2 style={{display: 'inline-block', marginLeft: '2.3em'}}>Notifier Title:</h2>
           <input type="text" id="fname" name="fname" style={{marginLeft: '1em'}}></input>
@@ -27,19 +27,17 @@ class AddNotification extends React.Component {
           <input type="text" id="fname" name="fname" style={{marginLeft: '1em'}}></input>
         </div>
         <button>Add</button>
-      </center> 
+      </div> 
     )
   }
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <div>
-    <center>
-      <PNSTitle />
-    </center>
+  <center>
+    <PNSTitle />
     <AddNotification />
-  </div>
+  </center>
 );
 
 reportWebVitals();
