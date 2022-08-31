@@ -1,0 +1,28 @@
+ 
+Deprecated new value handling code:
+    
+    #with conn.cursor() as cur:
+    #    try:
+    #        cur.execute("SELECT {0} FROM patientDataTable WHERE patientID = {1}".format(coloumn, patientID))
+    #    except Exception as e:
+    #        return str(e)
+    #        
+    #results = cur.fetchone()[0]
+    #    
+    #results = json.loads(results)
+    #    
+    #today = datetime.date.today()
+    #
+    #todayDate = today.strftime("%d//%m//%Y")
+    #
+    #newJSONString = {todayDate: value}
+    #
+    #results.update(newJSONString)
+    #       
+    #with conn.cursor() as cur:
+    #    try:
+    #        cur.execute("SELECT patientDataTable SET {0} = {1} WHERE patientID = {2}".format(coloumn, results, patientID))
+    #    except Exception as e:
+    #        return str(e)
+    #
+    #conn.commit()
