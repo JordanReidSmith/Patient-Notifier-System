@@ -1,0 +1,24 @@
+openapi: "3.0.1"
+info:
+  title: "Patient-Notifier-System-external-data-entry-API"
+  version: "2022-09-07T04:33:35Z"
+servers:
+- url: "https://nrgekyrt06.execute-api.ap-southeast-2.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "/Stage-two"
+paths:
+  /:
+    post:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+components:
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"

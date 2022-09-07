@@ -13,10 +13,15 @@ class App extends React.Component {
 
     this.handleClick = this.handleClick.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.resetScreen = this.resetScreen.bind(this)
   }
 
   handleClick () {
     this.setState({screenState: 'home'});
+  }
+
+  resetScreen (){
+    this.setState({screenState: 'login'});
   }
 
   handleChange (val) {
@@ -53,7 +58,7 @@ class App extends React.Component {
       return (
         <center>
           <PNSTitle />
-          <HomeScreen username = {this.state.currentUser} password = {this.state.currentPass} />
+          <HomeScreen username = {this.state.currentUser} password = {this.state.currentPass} resetScreen = {this.resetScreen}/>
         </center>
       )
     }
@@ -85,13 +90,17 @@ class HomeScreen extends React.Component {
   }
 
   fetchData = () => {
-    // Simple GET request using fetch
-    fetch('https://547wxir4gi.execute-api.ap-southeast-2.amazonaws.com/First-Deployment?username='+this.props.username+'&password='+this.props.password, {
-      method: "GET",
+    fetch('https://547wxir4gi.execute-api.ap-southeast-2.amazonaws.com/Stage-two/', {
+      method: "POST",
+      mode: "cors",
       dataType: "JSON",
       headers: {
-        "Content-Type": "application/json;"
-      }
+        "Content-Type": "application/json;",
+      },
+      body: JSON.stringify({
+          username: this.props.username,
+          password: this.props.password
+      })
     })
     .then(response => response.json())
     .then(response => this.setState({ curDisplay: 'home', notifications: response.notifications, details: response.patientData, unreadNotifications: response.newNotifications, dataIsLoaded: true }));
@@ -106,6 +115,9 @@ class HomeScreen extends React.Component {
       return (
         <div>Loading...</div>
       )
+    }
+    else if (this.state.details == undefined){
+      this.props.resetScreen();
     }
     else if (this.state.curDisplay == 'home'){
       return (
@@ -134,7 +146,7 @@ class HomeScreen extends React.Component {
           <button onClick={() => this.handleClick("home")} >back</button>
           <ul className="list-group">
             {this.state.notifications.map(listitem => (
-              <li className="list-group-item list-group-item-primary">
+              <li className="list-group-item list-group-item-primary" key={listitem[0]}>
                 Date: {listitem[0].slice(0, -6)}/{listitem[0].slice(-6, -4)}/{listitem[0].slice(-4)} - Type: {listitem[1]} - Advice: {listitem[2]}
               </li>
             ))}
@@ -148,8 +160,8 @@ class HomeScreen extends React.Component {
           <button onClick={() => this.handleClick("home")} >back</button>
           <ul className="list-group">
             {this.state.details[0][3].slice(1,-1).split(',').map(listitem => (
-              <li className="list-group-item list-group-item-primary">
-                Date: {listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')} - Weight: {listitem.split(':')[1]}
+              <li className="list-group-item list-group-item-primary" key={listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')}>
+                Date: {listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')} - Weight: {listitem.split(':')[1]}kg
               </li>
             ))}
           </ul>
@@ -162,8 +174,8 @@ class HomeScreen extends React.Component {
           <button onClick={() => this.handleClick("home")} >back</button>
           <ul className="list-group">
             {this.state.details[0][4].slice(1,-1).split(',').map(listitem => (
-              <li className="list-group-item list-group-item-primary">
-                Date: {listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')} - Weight: {listitem.split(':')[1]}
+              <li className="list-group-item list-group-item-primary" key={listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')}>
+                Date: {listitem.split(':')[0].trim().slice(1, -1).replaceAll('//','/')} - Steps: {listitem.split(':')[1]}
               </li>
             ))}
           </ul>
