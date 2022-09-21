@@ -1,4 +1,5 @@
 import './App.css';
+import {styles} from "./styles.js";
 import React from 'react';
 
 class App extends React.Component {
@@ -85,12 +86,15 @@ class HomeScreen extends React.Component {
       steps: [],
       weights: [],
       unreadNotifications: 0,
+      tooltip: [],
+      tooltipSubject: '',
+      tooltipBody:'',
       dataIsLoaded: false
     };
 
     //bind functions
     this.fetchData = this.fetchData.bind(this)
-
+    this.updateTooltip = this.updateTooltip.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
 
@@ -105,6 +109,7 @@ class HomeScreen extends React.Component {
   //function used to attempt login, and retrieve data from the database to store in state
   fetchData = () => {
     //create fetch request
+    try {
     fetch('https://547wxir4gi.execute-api.ap-southeast-2.amazonaws.com/Stage-two/', {
       method: "POST",
       mode: "cors",
@@ -122,6 +127,15 @@ class HomeScreen extends React.Component {
     //then update the state values, set state to Home (main menu), notifications, details and unreadNotifications as the values retrieved from the database, and set DataIsLoaded to true.
     //.then(response => this.setState({ curDisplay: 'home', notifications: response.notifications, details: response.patientData, unreadNotifications: response.newNotifications, dataIsLoaded: true }));
     .then(response => this.setState({ curDisplay: 'home', notifications: response.notifications, details: response.patientData, steps: response.steps, weights: response.weights, unreadNotifications: response.newNotifications, dataIsLoaded: true }));
+    }
+    catch {
+      this.props.resetScreen()
+      alert("Failed to connect to server")
+    }
+  }
+
+  updateTooltip (tooltipValues) {
+    this.setState({tooltip: tooltipValues});
   }
 
   //when this component is loaded successfully, run the fetchData function
@@ -139,6 +153,7 @@ class HomeScreen extends React.Component {
     //if the loading did not return valid data, reset to the login screen
     else if (this.state.details == undefined){
       this.props.resetScreen();
+      alert("Incorrect login details");
     }
     //if the current display is Home, render the main menu i.e. buttons representing extended menus
     else if (this.state.curDisplay == 'home'){
@@ -146,7 +161,7 @@ class HomeScreen extends React.Component {
         <div>
           <h1>Hello {String(this.state.details).split(",")[0]}</h1>
           <button onClick={() => this.handleClick("details")} style={{display: 'inline-block'}}>details</button>
-          <button onClick={() => this.handleClick("notis")} style={{display: 'inline-block'}}>notifications ({this.state.unreadNotifications})</button>
+          <button onClick={() => {this.updateTooltip(["Select a notification", "it's details will be displayed here", ""]); this.handleClick("notis")}} style={{display: 'inline-block'}}>notifications ({this.state.unreadNotifications})</button>
           <button onClick={() => this.handleClick("weights")}>weight entries</button>
           <button onClick={() => this.handleClick("steps")}>step entries</button>
         </div>
@@ -156,56 +171,71 @@ class HomeScreen extends React.Component {
     else if (this.state.curDisplay == 'details'){
         return (
           <div>
-            <button onClick={() => this.handleClick("home")} >back</button>
-            <p>Name: {this.state.details[0][0]}</p>
-            <p>E-mail: {this.state.details[0][1]}</p>
-            <p>Age: {this.state.details[0][2]}</p>
+            <button onClick={() => this.handleClick("home")} ><b>back</b></button>
+            <center style={{lineHeight: '0', maxWidth: '55ch', textAlign: 'left', backgroundColor: 'powderblue', border: '1px solid black', borderRadius: '15px'}}>
+              <p style={{marginLeft: '3ch', width: '8ch', display:'inline-block'}}><b>Name:</b></p>
+              <p style={{display:'inline'}}>{this.state.details[0][0]}</p>
+              <p></p>
+              <p style={{marginLeft: '3ch', width: '8ch', display:'inline-block'}}><b>E-mail:</b></p>
+              <p style={{display:'inline'}}>{this.state.details[0][1]}</p>
+              <p></p>
+              <p style={{marginLeft: '3ch', width: '8ch', display:'inline-block'}}><b>Age:</b></p>
+              <p style={{display:'inline'}}>{this.state.details[0][2]}</p>
+            </center>
           </div>
         )
     }
     //if the current display is notis, create a list group and populate it with all notifications then display it
     else if (this.state.curDisplay == 'notis'){
       return (
-        <div>
-          <button onClick={() => this.handleClick("home")} >back</button>
-          <ul className="list-group">
+        <center style={{maxWidth: '55ch'}}>
+          <button onClick={() => this.handleClick("home")}><b>back</b></button>
+          <div style={{backgroundColor: 'powderblue', border: '1px solid black', borderRadius: '15px'}}>
+            <h2>{this.state.tooltip[0]}</h2>
+            <p>{this.state.tooltip[1]}</p>
+            <p>{this.state.tooltip[2]}</p>  
+          </div>
+          <ul className="list-group" style={{marginLeft: '-4.5ch'}}>
             {this.state.notifications.map(listitem => (
-              <li className="list-group-item list-group-item-primary" key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
-                Date: {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} - Subject: {listitem[1]} - Advice: {listitem[2]}
+              <li style={styles.listObject} onClick={() => this.updateTooltip([listitem[1], listitem[2], `${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`])} key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
+                <p style={styles.dateString}><b>Date:</b> {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} </p>
+                <p style={{display: 'inline-block'}}><b>Subject:</b> {listitem[1]}</p>
               </li>
             ))}
           </ul>
-        </div>
+        </center>
       )
     }
     //if the current display is weights, create a list group and populate it with all weight values then display it
     else if (this.state.curDisplay == 'weights'){
       return (
-        <div>
-          <button onClick={() => this.handleClick("home")} >back</button>
-          <ul className="list-group">
+        <center style={{maxWidth: '39ch'}}>
+          <button onClick={() => this.handleClick("home")} ><b>back</b></button>
+          <ul className="list-group" style={{marginLeft: '-4ch'}}>
             {this.state.weights.map(listitem => (
-              <li className="list-group-item list-group-item-primary" key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
-                Date: {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} - Weight: {listitem[1]}kg
+              <li style={styles.listObject} key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
+                <p style={styles.dateString}><b>Date:</b> {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} </p>
+                <p style={{display: 'inline-block'}}><b>Weight:</b> {listitem[1]}<b>kg</b></p>
               </li>
             ))}
           </ul>
-        </div>
+        </center>
       )
     }
     //if the current display is steps, create a list group and populate it with all step values then display it
     else if (this.state.curDisplay == 'steps'){
       return (
-        <div>
-          <button onClick={() => this.handleClick("home")} >back</button>
-          <ul className="list-group">
+        <center style={{maxWidth: '36ch'}}>
+          <button onClick={() => this.handleClick("home")} ><b>back</b></button>
+          <ul className="list-group" style={{marginLeft: '-4ch'}}>
             {this.state.steps.map(listitem => (
-              <li className="list-group-item list-group-item-primary" key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
-                Date: {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} - Steps: {listitem[1]}
+              <li style={styles.listObject} key={`${listitem[0][2]} - ${listitem[0][1]} - ${listitem[0][0]} - ${listitem[0][3]} - ${listitem[0][4]} - ${listitem[0][5]}`}>
+                <p style={styles.dateString}><b>Date:</b> {`${listitem[0][2]}/${listitem[0][1]}/${listitem[0][0]}`} </p>
+                <p style={{display: 'inline-block'}}><b>Steps:</b> {listitem[1]}</p>
               </li>
             ))}
           </ul>
-        </div>
+        </center>
       )
     }
   }
